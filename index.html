@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mitansh Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --panel: rgba(255,255,255,0.035);
+    --panel-border: rgba(232,195,117,0.22);
+    --panel-border-strong: rgba(232,195,117,0.45);
+    --text: #f5f2ea;
+    --text-dim: #948d7c;
+    --gold: #e8c375;
+    --gold-dim: #7d6a3f;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    scroll-behavior:smooth;
+  }
+  
+  .footer-brand-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  
+  canvas#bg{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:#000;
+    z-index:0;
+  }
+
+  .content{
+    position:relative;
+    z-index:1;
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ---- constellation side nav ---- */
+  .orbit-nav{
+    position:fixed;
+    right:32px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0;
+  }
+  .orbit-dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:rgba(245,242,234,0.25);
+    border:1px solid rgba(232,195,117,0.3);
+    cursor:pointer;
+    transition:background .3s, box-shadow .3s, transform .3s;
+    flex-shrink:0;
+  }
+  .orbit-dot.active{
+    background:var(--gold);
+    box-shadow:0 0 8px 1px rgba(232,195,117,0.7);
+    transform:scale(1.3);
+  }
+  .orbit-line{
+    width:1px;
+    height:44px;
+    background:linear-gradient(rgba(232,195,117,0.35), rgba(232,195,117,0.05));
+  }
+
+  section{
+    min-height:100vh;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:120px 8vw;
+  }
+
+  .section-inner{
+    max-width:1100px;
+    width:100%;
+    margin:0 auto;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:18px;
+    display:block;
+  }
+
+  /* ---- Section 1: About ---- */
+  #about h1{
+    font-size:clamp(36px, 6vw, 64px);
+    font-weight:600;
+    line-height:1.1;
+    margin-bottom:28px;
+  }
+  #about p{
+    font-size:17px;
+    line-height:1.75;
+    color:var(--text-dim);
+    max-width:640px;
+  }
+  #about .accent-word{
+    color:var(--gold);
+  }
+
+  /* ---- Section 2: Profile & Skills ---- */
+  .profile-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+  }
+  .team-card{
+    max-width: 650px;
+    width: 100%;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:3px;
+    padding:0 0 32px;
+    backdrop-filter:blur(6px);
+    overflow:hidden;
+    will-change:transform;
+    transition:border-color .3s;
+  }
+  .team-card:hover{
+    border-color:var(--panel-border-strong);
+  }
+  .team-card .card-body{
+    padding:32px 30px 0;
+  }
+  .team-card h3{
+    font-size:28px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .team-card .role{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--gold);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .team-card .bio{
+    margin-top:18px;
+    font-size:15px;
+    line-height:1.75;
+    color:var(--text-dim);
+  }
+  .team-card .focus-label{
+    margin-top:24px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border-top:1px solid var(--panel-border);
+    padding-top:18px;
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .skill-group h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .team-card .focus-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .team-card .focus-list li{
+    font-size:13.5px;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .team-card .focus-list li::before{
+    content:"";
+    width:5px; height:5px;
+    border-radius:50%;
+    background:var(--gold);
+    flex-shrink:0;
+  }
+
+  /* ---- Section 3: Work ---- */
+  .work-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-top:20px;
+  }
+  .work-row{
+    display:flex;
+    align-items:stretch;
+    gap:20px;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    padding:20px;
+    backdrop-filter:blur(6px);
+    transition:border-color .3s, background .3s;
+  }
+  .work-row:hover{
+    border-color:var(--panel-border-strong);
+    background:rgba(255,255,255,0.05);
+  }
+  .work-thumb{
+    flex:0 0 90px;
+    width:90px; height:90px;
+    border:1px solid var(--panel-border-strong);
+    background:linear-gradient(160deg, rgba(232,195,117,0.12), rgba(0,0,0,0));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Space Grotesk', sans-serif;
+    color:var(--gold);
+    font-size:22px;
+  }
+  .work-info{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:10px;
+  }
+  .work-info p{
+    margin:0;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--text-dim);
+  }
+
+  /* ---- Simple Centered Brand Typography ---- */
+  .brand-hero-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 30vh;
+    padding: 60px 0 10px;
+    text-align: center;
+  }
+
+  .simple-brand-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(48px, 8.5vw, 104px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    text-transform: lowercase;
+    margin: 0 auto;
+    padding: 10px 0;
+    background: linear-gradient(135deg, #ffffff 30%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 12px rgba(232, 195, 117, 0.15));
+  }
+
+  .work-name{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:var(--gold);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    width:fit-content;
+    border-bottom:1px solid transparent;
+    transition:border-color .25s, opacity .25s;
+  }
+  .work-name:hover{
+    border-color:var(--gold);
+  }
+  .work-name .arrow{
+    transition:transform .25s;
+  }
+  .work-name:hover .arrow{
+    transform:translateX(3px);
+  }
+
+  /* ---- Section 4: Contact styling ---- */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .contact-card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    padding: 24px 30px;
+    border-radius: 3px;
+    backdrop-filter: blur(6px);
+  }
+  .contact-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .contact-value a {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 4px;
+    transition: color 0.25s;
+    word-break: break-all;
+  }
+  .contact-value a:hover {
+    color: var(--gold);
+  }
+
+  /* ---- Footer ---- */
+  .main-footer {
+    padding: 60px 8vw;
+    border-top: 1px solid var(--panel-border);
+    position: relative;
+    z-index: 1;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .copyright {
+    color: var(--text-dim);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+  }
+
+  @media (max-width:800px){
+    .work-row{ flex-direction:column; }
+    .work-thumb{ width:100%; height:160px; }
+    .orbit-nav{ right:14px; }
+    .footer-inner {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    .main-footer { padding: 40px 8vw; }
+    .brand-hero-container {
+      min-height: 20vh; 
+      padding: 40px 0 10px;
+    }
+    .simple-brand-title {
+      font-size: clamp(34px, 10vw, 52px);
+      padding: 10px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<nav class="orbit-nav" id="orbitNav">
+  <div class="orbit-dot active" data-target="about"></div>
+  <div class="orbit-line"></div>
+  <div class="orbit-dot" data-target="profile"></div>
+  <div class="orbit-line"></div>
+  <div class="orbit-dot" data-target="work"></div>
+  <div class="orbit-line"></div>
+  <div class="orbit-dot" data-target="more"></div>
+</nav>
+
+<div class="content">
+  <!-- Brand Header -->
+  <div class="brand-hero-container">
+    <h1 class="simple-brand-title">WebNova</h1>
+  </div>
+
+  <!-- Section 1: About -->
+  <section id="about">
+    <div class="section-inner">
+      <span class="eyebrow">// about</span>
+      <h1>I build things that live between <span class="accent-word">hardware</span>, <span class="accent-word">code</span>, and experience.</h1>
+      <p>
+        I'm an engineering student focused on shipping clean, high-performing web tools and frontend interfaces that blend solid architecture with seamless design.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 2: Profile & Skills -->
+  <section id="profile">
+    <div class="section-inner">
+      <span class="eyebrow">// developer profile</span>
+      <h2 style="font-size:32px; font-weight:600; margin-bottom:8px;">Core Focus & Skills</h2>
+      
+      <div class="profile-container">
+        <div class="team-card">
+          <div class="card-body">
+            <h3>Mitansh Jambasariya</h3>
+            <div class="role">Product &amp; Frontend Engineer</div>
+            <p class="bio">
+              I bridge the gap between idea and interface — shaping how web applications look, feel, and function for real people through interactive design, seamless UX flow, and optimized deployment.
+            </p>
+            
+            <div class="focus-label">// Technical Toolkit &amp; Trusty Skills</div>
+            
+            <div class="skills-grid">
+              <div class="skill-group">
+                <h4>Frontend Architecture</h4>
+                <ul class="focus-list">
+                  <li>HTML5 / Modern CSS3</li>
+                  <li>JavaScript (ES6+)</li>
+                  <li>React &amp; Web Components</li>
+                  <li>Responsive Design Systems</li>
+                </ul>
+              </div>
+
+              <div class="skill-group">
+                <h4>Product &amp; UI/UX</h4>
+                <ul class="focus-list">
+                  <li>Interactive Prototyping</li>
+                  <li>User Flow Optimization</li>
+                  <li>Design System Tokens</li>
+                  <li>Accessibility Best Practices</li>
+                </ul>
+              </div>
+
+              <div class="skill-group">
+                <h4>Deployment &amp; Tools</h4>
+                <ul class="focus-list">
+                  <li>Vercel &amp; Cloud Deployment</li>
+                  <li>Git / Version Control</li>
+                  <li>Client-Facing Solutions</li>
+                  <li>Performance Optimization</li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section 3: Work -->
+  <section id="work">
+    <div class="section-inner">
+      <span class="eyebrow">// work</span>
+      <h2 style="font-size:32px; font-weight:600; margin-bottom:8px;">Deployed WebPages</h2>
+      <div class="work-list">
+
+        <!-- Project 1 -->
+        <div class="work-row">
+          <div class="work-thumb">
+            <img src="https://www.drashwin.com/logo.png" alt="Dr. Ashwin Homoeopathy" style="width:100%; height:100%; object-fit:cover; display:block;">
+          </div>
+          <div class="work-info">
+            <p>Dr. Ashwin Homoeopathy is a responsive healthcare website developed in collaboration with S&amp;T Web Works for a classical homoeopathy clinic. The website highlights the clinic's services, expertise, and patient-centric approach through a clean, modern design and seamless user experience.</p>
+            <a class="work-name" href="https://www.drashwin.com/" target="_blank">Project Link <span class="arrow">→</span></a>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="work-row">
+          <div class="work-thumb">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJQTgVj6lSF7-BVOFJdB-nU2m6ZviFnN5ZG7xyXZeJfwbRU0l4zxsBfjiB&s=10" alt="Mandala Pot" style="width:100%; height:100%; object-fit:cover; display:block;">
+          </div>
+          <div class="work-info">
+            <p>Mandala Pot is a responsive website we developed for a Pure Veg and Jain Pan Asian restaurant. It features a modern design, interactive menu, smooth navigation, and a mobile-friendly interface, providing customers with an engaging way to explore the restaurant's offerings and experience its brand online.</p>
+            <a class="work-name" href="https://mandalapot.vercel.app/" target="_blank">Project Link <span class="arrow">→</span></a>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="work-row">
+          <div class="work-thumb">
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/027/841/864/small/holographic-image-of-gamepad-futuristic-element-3d-rendering-photo.jpg" alt="PS Vault" style="width:100%; height:100%; object-fit:cover; display:block;">
+          </div>
+          <div class="work-info">
+            <p>PS Vault is a PlayStation game management platform that allows users to organize their game library, track gameplay progress, record hours played, and manage multiple accounts. It features Google Authentication, a guest/demo mode, personalized profile integration, and a responsive, user-friendly interface, with community features currently in development.</p>
+            <a class="work-name" href="https://psvault.netlify.app/" target="_blank">Project Link <span class="arrow">→</span></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Contact -->
+  <section id="more">
+    <div class="section-inner">
+      <span class="eyebrow">// contact</span>
+      <h2 style="font-size:32px; font-weight:600; margin-bottom:28px;">Get in touch</h2>
+      
+      <div class="contact-grid">
+        <!-- Phone Channels -->
+        <div class="contact-card">
+          <div class="contact-label">Voice / WhatsApp</div>
+          <div class="contact-value">
+            <a href="tel:+919022217744">9022217744</a>
+          </div>
+          <div class="contact-value">
+            <a href="tel:+917507406043">7507406043</a>
+          </div>
+        </div>
+
+        <!-- Digital Channels -->
+        <div class="contact-card">
+          <div class="contact-label">Digital Inquiries</div>
+          <div class="contact-value">
+            <a href="mailto:mitansh.jambasariya25@sakec.ac.in">mitansh.jambasariya25@sakec.ac.in</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <p class="copyright">&copy; 2026 WebNova. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ---------------- galaxy background ----------------
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let W, H, cx, cy, maxRadius;
+
+function resizeCanvas() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  cx = W/2; 
+  cy = H/2;
+  maxRadius = Math.sqrt(W*W + H*H) * 0.5;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+
+function starColor() {
+  const r = Math.random();
+  if (r < 0.6) return '255,255,255';
+  if (r < 0.85) return '255,250,230';
+  return '255,244,200';
+}
+
+const bgStars = [];
+const BG_COUNT = 700;
+for (let i=0; i<BG_COUNT; i++){
+  const depth = Math.random();
+  bgStars.push({
+    x: rand(0, W), y: rand(0, H),
+    baseR: depth < 0.7 ? rand(0.3,0.9) : rand(0.9,1.8),
+    color: starColor(),
+    twinkleSpeed: rand(0.5, 2),
+    twinklePhase: rand(0, Math.PI*2)
+  });
+}
+
+const spiralStars = [];
+const ARMS = 4;
+const SPIRAL_COUNT = 1400;
+
+for (let i=0; i<SPIRAL_COUNT; i++){
+  const t = Math.pow(Math.random(), 0.6);
+  const armOffset = ((i % ARMS) / ARMS) * Math.PI * 2;
+  const angle = armOffset + t * 2.4 * Math.PI;
+  const radius = t * maxRadius;
+  const scatter = rand(-1,1) * (0.08 + t*0.18) * maxRadius;
+  spiralStars.push({
+    angleOffset: angle, radius, scatter,
+    baseR: t < 0.3 ? rand(0.6,1.4) : rand(0.3,1.0),
+    color: starColor(),
+    twinkleSpeed: rand(0.4, 1.8),
+    twinklePhase: rand(0, Math.PI*2),
+    brightness: 1 - t*0.4
+  });
+}
+
+const coreStars = [];
+for (let i=0; i<150; i++){
+  coreStars.push({
+    angleOffset: rand(0, Math.PI*2),
+    radius: rand(0, maxRadius*0.08),
+    scatter: 0,
+    baseR: rand(0.5,1.3),
+    color: starColor(),
+    twinkleSpeed: rand(0.4,1.8),
+    twinklePhase: rand(0,Math.PI*2),
+    brightness: 1
+  });
+}
+
+let rotation = 0;
+const ROTATION_SPEED = 0.00006;
+let lastTime = performance.now();
+
+function draw(now) {
+  const dt = now - lastTime;
+  lastTime = now;
+  rotation += ROTATION_SPEED * dt;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,W,H);
+
+  const t = now * 0.001;
+
+  for (const s of bgStars) {
+    const twinkle = 0.55 + 0.45 * Math.sin(t*s.twinkleSpeed + s.twinklePhase);
+    const alpha = 0.35 + 0.5 * twinkle;
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(${s.color},${alpha})`;
+    ctx.arc(s.x, s.y, s.baseR, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawSpiralSet(set) {
+    for (const s of set) {
+      const ang = s.angleOffset + rotation;
+      const x = cx + Math.cos(ang) * s.radius + Math.cos(ang+1.57)*s.scatter;
+      const y = cy + Math.sin(ang) * s.radius * 0.75 + Math.sin(ang+1.57)*s.scatter*0.75;
+      const twinkle = 0.5 + 0.5 * Math.sin(t*s.twinkleSpeed + s.twinklePhase);
+      const alpha = (0.3 + 0.55*twinkle) * s.brightness;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(${s.color},${alpha})`;
+      ctx.arc(x, y, s.baseR, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  drawSpiralSet(spiralStars);
+  drawSpiralSet(coreStars);
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// ---------------- scroll nav / active dot ----------------
+const dots = document.querySelectorAll('.orbit-dot');
+const sections = document.querySelectorAll('section');
+
+dots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.getElementById(dot.dataset.target).scrollIntoView({behavior:'smooth'});
+  });
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      dots.forEach(d => d.classList.remove('active'));
+      const active = document.querySelector(`.orbit-dot[data-target="${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(s => observer.observe(s));
+
+// ---------------- weighted card follow ----------------
+const MAX_MOVE = 18;
+const DAMPING = 0.07;
+
+document.querySelectorAll('.team-card').forEach(card => {
+  let targetX = 0, targetY = 0;
+  let curX = 0, curY = 0;
+
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const relX = (e.clientX - rect.left) / rect.width - 0.5;
+    const relY = (e.clientY - rect.top) / rect.height - 0.5;
+    targetX = -relX * 2 * MAX_MOVE;
+    targetY = -relY * 2 * MAX_MOVE;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    targetX = 0;
+    targetY = 0;
+  });
+
+  function animate() {
+    curX += (targetX - curX) * DAMPING;
+    curY += (targetY - curY) * DAMPING;
+    card.style.transform = `translate(${curX.toFixed(2)}px, ${curY.toFixed(2)}px)`;
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
+</script>
+
+</body>
+</html>
